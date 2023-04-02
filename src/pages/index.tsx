@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+	const secretMessage = api.example.getSecretMessage.useQuery();
 
   return (
     <>
@@ -46,7 +47,9 @@ const Home: NextPage = () => {
           </div>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
+						this is where the RPC call is made:<br />
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
+							{secretMessage.data}
             </p>
             <AuthShowcase />
           </div>
