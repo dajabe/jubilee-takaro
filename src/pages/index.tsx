@@ -1,14 +1,12 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-// import { api } from "~/utils/api";
+import { api } from "~/utils/api";
 import Form from "./form";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 
 const Home: NextPage = () => {
-  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  // const secretMessage = api.example.getSecretMessage.useQuery();
-
+  const { data } = api.registrations.getAll.useQuery();
   const user = useUser();
 
   return (
@@ -58,6 +56,11 @@ const Home: NextPage = () => {
             </SignOutButton>
           )}
         </div>
+        <ul>
+          {data?.map((registration) => (
+            <li key={registration.id}>{registration.email}</li>
+          ))}
+        </ul>
       </main>
     </>
   );
