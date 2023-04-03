@@ -28,7 +28,7 @@ const Form: NextPage = () => {
       <div className="mb-4 flex flex-col">
         <label
           htmlFor="firstName"
-          className="mb-1 block pr-4 font-bold text-gray-700 md:mb-0 md:text-left"
+          className="mb-1 block pr-4 font-bold text-slate-800 md:mb-0 md:text-left"
         >
           First Name
         </label>
@@ -37,13 +37,13 @@ const Form: NextPage = () => {
           id="firstName"
           autoComplete="given-name"
           {...register("firstName", { required: true })}
-          className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-orange-takaro focus:bg-white focus:outline-none"
+          className="w-full appearance-none rounded border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
         />
       </div>
       <div className="mb-4 flex flex-col">
         <label
           htmlFor="lastName"
-          className="mb-1 block pr-4 font-bold text-gray-700 md:mb-0 md:text-left"
+          className="mb-1 block pr-4 font-bold text-slate-800 md:mb-0 md:text-left"
         >
           Last Name
         </label>
@@ -51,13 +51,13 @@ const Form: NextPage = () => {
           type="text"
           id="lastName"
           {...register("lastName", { required: true })}
-          className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-orange-takaro focus:bg-white focus:outline-none"
+          className="w-full appearance-none rounded border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
         />
       </div>
       <div className="mb-4 flex flex-col">
         <label
           htmlFor="email"
-          className="mb-1 block pr-4 font-bold text-gray-700 md:mb-0 md:text-left"
+          className="mb-1 block pr-4 font-bold text-slate-800 md:mb-0 md:text-left"
         >
           Email
         </label>
@@ -65,11 +65,11 @@ const Form: NextPage = () => {
           type="email"
           id="email"
           {...register("email", { required: true })}
-          className="w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-orange-takaro focus:bg-white focus:outline-none"
+          className="w-full appearance-none rounded border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
         />
       </div>
       <button
-        className="focus:shadow-outline rounded bg-orange-takaro px-4 py-2 font-bold text-white shadow hover:bg-orange-400 focus:outline-none"
+        className="focus:shadow-outline rounded bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
         type="submit"
       >
         Register
