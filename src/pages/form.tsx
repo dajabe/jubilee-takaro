@@ -1,29 +1,22 @@
 import type { NextPage } from "next";
 import { type SubmitHandler, useForm } from "react-hook-form";
-
-async function saveFormData(data: IFormData) {
-  return await fetch("/api/register", {
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" },
-    method: "POST",
-  });
-}
-
-interface IFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-}
+import { api } from "~/utils/api";
+import { type Registrations } from "@prisma/client";
 
 const Form: NextPage = () => {
-  const { register, handleSubmit } = useForm<IFormData>();
+  // const { data } = api.registrations.getAll.useQuery();
+  const { register, handleSubmit } = useForm<Registrations>();
 
-  const onSubmit: SubmitHandler<IFormData> = (data) => console.log(data);
+  const { mutate } = api.registrations.create.useMutation();
+
+  const submitHandler: SubmitHandler<Registrations> = (rego) => {
+    mutate(rego);
+  };
 
   return (
     <form
       className="mb-4 rounded bg-white px-8 pb-8 pt-6 shadow-md"
-      onSubmit={handleSubmit(saveFormData)}
+      onSubmit={handleSubmit(submitHandler)}
     >
       <div className="mb-4 flex flex-col">
         <label

@@ -1,18 +1,18 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { api } from "~/utils/api";
+// import { api } from "~/utils/api";
 import Form from "./form";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
-import { LoadingSpinner } from "~/components/loading";
+// import { LoadingSpinner } from "~/components/loading";
 
 const Home: NextPage = () => {
-  const { data, isLoading } = api.registrations.getAll.useQuery();
+  // const { data, isLoading } = api.registrations.getAll.useQuery();
   const user = useUser();
 
-  if (isLoading) return <LoadingSpinner />;
+  // if (isLoading) return <LoadingSpinner />;
 
-  if (!data) return <div>Something went wrong</div>;
+  // if (!data) return <div>Something went wrong</div>;
 
   return (
     <>
@@ -61,11 +61,6 @@ const Home: NextPage = () => {
             </SignOutButton>
           )}
         </div>
-        <ul>
-          {data?.map((registration) => (
-            <li key={registration.id}>{registration.email}</li>
-          ))}
-        </ul>
       </main>
     </>
   );
