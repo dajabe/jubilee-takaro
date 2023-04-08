@@ -11,5 +11,8 @@ Using T3's Next.Js stack to provide a simple registration form for a club event.
 [x] Basic form for name and email registration
 [x] Connect form to tRPC
 [x] Expand form to have selectable boxes/cards
+[x] Reset form after submission
+	[] Add error handling to form submission
+[] Feedback to user (toasting)
 [] Add email sending
 [] Add branding front end

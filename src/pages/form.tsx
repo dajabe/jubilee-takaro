@@ -5,12 +5,13 @@ import { type Registrations } from "@prisma/client";
 
 const Form: NextPage = () => {
   // const { data } = api.registrations.getAll.useQuery();
-  const { register, handleSubmit } = useForm<Registrations>();
+  const { register, handleSubmit, reset } = useForm<Registrations>();
 
   const { mutate } = api.registrations.create.useMutation();
 
   const submitHandler: SubmitHandler<Registrations> = (rego) => {
     mutate(rego);
+    reset();
   };
 
   return (
