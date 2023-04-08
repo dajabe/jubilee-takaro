@@ -10,5 +10,6 @@ export type Registration = allRegistrationsOutput[number];
 export const registrationInput = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
+  ticketType: z.string().min(4).max(8),
   email: z.string().email(),
 });

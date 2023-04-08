@@ -17,6 +17,7 @@ export const registrationsRouter = createTRPCRouter({
         data: {
           firstName: input.firstName,
           lastName: input.lastName,
+          ticketType: input.ticketType,
           email: input.email,
         },
       });
