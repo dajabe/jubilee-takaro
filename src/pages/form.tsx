@@ -104,6 +104,7 @@ const Form: NextPage = () => {
       </div>
       <div>
         {Array.from({ length: guestCount }).map((_, index) => {
+          const wordIndex = numberWords[index] ?? "0";
           return (
             <div key={index}>
               {index > 0 && (
@@ -111,10 +112,7 @@ const Form: NextPage = () => {
                   <hr className="mb-10 border-2 border-slate-200" />
                   <div className="mb-5 flex justify-between md:text-left">
                     <div className="flex-1 self-center text-xl font-bold text-slate-800">
-                      {typeof numberWords[index] !== "undefined"
-                        ? numberWords[index]
-                        : ""}
-                      {" guest"}
+                      {wordIndex + " guest"}
                     </div>
                     <label
                       htmlFor={`guests.${index}.child`}
@@ -122,14 +120,14 @@ const Form: NextPage = () => {
                     >
                       <input
                         id={`guests.${index}.child`}
-                        className="peer/isChild hidden"
+                        className="peer hidden"
                         type="checkbox"
                         {...register(`guests.${index}.child`)}
                       />
-                      <span className="m-0 rounded-l-lg bg-orange-takaro px-4 py-2 text-slate-800 peer-checked/isChild:bg-slate-200">
+                      <span className="m-0 rounded-l-lg bg-orange-takaro px-4 py-2 text-slate-800 peer-checked:bg-slate-200">
                         Adult
                       </span>
-                      <span className="m-0 rounded-r-lg bg-slate-200 px-4 py-2 peer-checked/isChild:bg-orange-takaro">
+                      <span className="m-0 rounded-r-lg bg-slate-200 px-4 py-2 peer-checked:bg-orange-takaro">
                         Child
                       </span>
                     </label>
@@ -138,14 +136,14 @@ const Form: NextPage = () => {
               )}
               <div className="mb-4 flex flex-col">
                 <label
-                  htmlFor="firstName"
+                  htmlFor={`firstName-guest${wordIndex}`}
                   className="mb-1 block pr-4 font-bold text-slate-800 md:mb-0 md:text-left"
                 >
                   First Name
                 </label>
                 <input
                   type="text"
-                  id="firstName"
+                  id={`firstName-guest${wordIndex}`}
                   autoComplete="given-name"
                   {...register(`guests.${index}.firstName`, { required: true })}
                   className="w-full appearance-none rounded-lg border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
@@ -153,14 +151,14 @@ const Form: NextPage = () => {
               </div>
               <div className="mb-4 flex flex-col">
                 <label
-                  htmlFor="lastName"
+                  htmlFor={`lastName-guest${wordIndex}`}
                   className="mb-1 block pr-4 font-bold text-slate-800 md:mb-0 md:text-left"
                 >
                   Last Name
                 </label>
                 <input
                   type="text"
-                  id="lastName"
+                  id={`lastName-guest${wordIndex}`}
                   {...register(`guests.${index}.lastName`, { required: true })}
                   className="w-full appearance-none rounded-lg border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
                 />
@@ -168,53 +166,47 @@ const Form: NextPage = () => {
               <div className="mb-2 block font-bold text-slate-800 md:mb-0 md:text-left">
                 Which days will {index > 0 ? "they" : "you"} attend?
               </div>
-              <ul className="mb-5 grid w-full gap-2 font-bold md:grid-cols-3">
-                <li className="">
-                  <input
-                    {...register(`guests.${index}.ticketType`)}
-                    id="saturday-ticket"
-                    type="radio"
-                    value="saturday"
-                    className="peer hidden"
-                  />
-                  <label
-                    htmlFor="saturday-ticket"
-                    className="inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked:border-orange-takaro peer-checked:text-orange-800"
-                  >
-                    Saturday
-                  </label>
-                </li>
-                <li>
-                  <input
-                    {...register(`guests.${index}.ticketType`)}
-                    id="sunday-ticket"
-                    type="radio"
-                    value="sunday"
-                    className="peer hidden"
-                  />
-                  <label
-                    htmlFor="sunday-ticket"
-                    className="inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked:border-orange-takaro peer-checked:text-orange-800"
-                  >
-                    Sunday
-                  </label>
-                </li>
-                <li>
-                  <input
-                    {...register(`guests.${index}.ticketType`)}
-                    id="both-ticket"
-                    type="radio"
-                    value="both"
-                    className="peer hidden"
-                  />
-                  <label
-                    htmlFor="both-ticket"
-                    className="inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked:border-orange-takaro peer-checked:text-orange-800"
-                  >
-                    Both
-                  </label>
-                </li>
-              </ul>
+              <div className="mb-5 grid w-full gap-2 font-bold md:grid-cols-3">
+                <input
+                  {...register(`guests.${index}.ticketType`)}
+                  id={`saturday-guest${wordIndex}`}
+                  type="radio"
+                  value="saturday"
+                  className={`peer/saturday hidden`}
+                />
+                <label
+                  htmlFor={`saturday-guest${wordIndex}`}
+                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/saturday:border-orange-takaro peer-checked/saturday:text-orange-800`}
+                >
+                  Saturday
+                </label>
+                <input
+                  {...register(`guests.${index}.ticketType`)}
+                  id={`sunday-guest${wordIndex}`}
+                  type="radio"
+                  value="sunday"
+                  className={`peer/sunday hidden`}
+                />
+                <label
+                  htmlFor={`sunday-guest${wordIndex}`}
+                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/sunday:border-orange-takaro peer-checked/sunday:text-orange-800`}
+                >
+                  Sunday
+                </label>
+                <input
+                  {...register(`guests.${index}.ticketType`)}
+                  id={`both-guest${wordIndex}`}
+                  type="radio"
+                  value="both"
+                  className={`peer/both hidden`}
+                />
+                <label
+                  htmlFor={`both-guest${wordIndex}`}
+                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:border-orange-takaro peer-checked/both:text-orange-800`}
+                >
+                  Both
+                </label>
+              </div>
             </div>
           );
         })}
