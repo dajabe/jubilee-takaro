@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
-import { type SubmitHandler, useForm, Controller } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
-import { type Registrations } from "@prisma/client";
 import { useState } from "react";
 
 type RegistrationFormData = {
@@ -9,7 +8,7 @@ type RegistrationFormData = {
   guests: {
     firstName: string;
     lastName: string;
-    child: boolean;
+    isChild: boolean;
     ticketType: string;
   }[];
   guestCount: number;
@@ -31,15 +30,15 @@ const Form: NextPage = () => {
   // const { data } = api.registrations.getAll.useQuery();
   const [guestCount, setGuestCount] = useState(1);
 
-  const { register, control, handleSubmit, reset } =
-    useForm<RegistrationFormData>();
+  const { register, handleSubmit, reset } = useForm<RegistrationFormData>();
 
   const { mutate } = api.registrations.create.useMutation();
 
   const submitHandler: SubmitHandler<RegistrationFormData> = (rego) => {
+    if (rego.guests[0]) rego.guests[0].isChild = false;
     console.log(rego);
-    // mutate(rego);
-    reset();
+    mutate(rego);
+    // reset();
   };
 
   const incrementGuestCount = () => {
@@ -122,7 +121,7 @@ const Form: NextPage = () => {
                         id={`guests.${index}.child`}
                         className="peer hidden"
                         type="checkbox"
-                        {...register(`guests.${index}.child`)}
+                        {...register(`guests.${index}.isChild`)}
                       />
                       <span className="m-0 rounded-l-lg bg-orange-takaro px-4 py-2 text-slate-800 peer-checked:bg-slate-200">
                         Adult
