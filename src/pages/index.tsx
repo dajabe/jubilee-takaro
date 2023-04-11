@@ -1,19 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-// import { api } from "~/utils/api";
 import Form from "./form";
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
-// import { LoadingSpinner } from "~/components/loading";
 
 const Home: NextPage = () => {
-  // const { data, isLoading } = api.registrations.getAll.useQuery();
-  const user = useUser();
-
-  // if (isLoading) return <LoadingSpinner />;
-
-  // if (!data) return <div>Something went wrong</div>;
-
   return (
     <>
       <Head>
@@ -38,28 +28,11 @@ const Home: NextPage = () => {
             <p className="text-2xl text-slate-100">
               Book your spot at our 50th Jubilee celebration now!
               <br />
-              {/* {hello.data ? hello.data.greeting : "Loading tRPC query..."} */}
             </p>
           </div>
           <div className="w-full max-w-md">
             <Form />
           </div>
-        </div>
-        <div>
-          {!user.isSignedIn && (
-            <SignInButton mode="modal">
-              <button className="focus:shadow-outline rounded bg-slate-200 px-4 py-2 font-bold text-orange-takaro shadow hover:bg-slate-100 focus:outline-none">
-                Sign In
-              </button>
-            </SignInButton>
-          )}
-          {user.isSignedIn && (
-            <SignOutButton>
-              <button className="focus:shadow-outline rounded bg-slate-200 px-4 py-2 font-bold text-orange-takaro shadow hover:bg-slate-100 focus:outline-none">
-                Sign Out
-              </button>
-            </SignOutButton>
-          )}
         </div>
       </main>
     </>
