@@ -32,13 +32,14 @@ const Form: NextPage = () => {
 
   const { register, handleSubmit, reset } = useForm<RegistrationFormData>();
 
-  const { mutate } = api.registrations.create.useMutation();
+  const { mutate: createRegistration } = api.registrations.create.useMutation();
+  const { mutate: sendEmail } = api.sendgrid.sendEmail.useMutation();
 
   const submitHandler: SubmitHandler<RegistrationFormData> = (rego) => {
     if (rego.guests[0]) rego.guests[0].isChild = false;
-    console.log(rego);
-    mutate(rego);
-    // reset();
+    sendEmail(rego);
+    createRegistration(rego);
+    reset();
   };
 
   const incrementGuestCount = () => {
