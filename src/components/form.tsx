@@ -29,7 +29,6 @@ const Form: NextPage = () => {
     "Ninth",
   ];
 
-  // const { data } = api.registrations.getAll.useQuery();
   const [guestCount, setGuestCount] = useState(1);
 
   const { register, handleSubmit, reset } = useForm<RegistrationFormData>();
@@ -40,7 +39,7 @@ const Form: NextPage = () => {
         toast.success(
           "You are now registered please check your inbox for a confirmation email"
         );
-        // reset();
+        reset();
       },
       onError: () => {
         toast.error(

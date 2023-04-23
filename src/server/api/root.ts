@@ -1,6 +1,5 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { registrationsRouter } from "./routers/registrations";
-import { sengridRouter } from "./routers/sendgrid";
 
 /**
  * This is the primary router for your server.
@@ -9,7 +8,6 @@ import { sengridRouter } from "./routers/sendgrid";
  */
 export const appRouter = createTRPCRouter({
   registrations: registrationsRouter,
-  sendgrid: sengridRouter,
 });
 
 // export type definition of API
