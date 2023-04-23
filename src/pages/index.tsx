@@ -1,19 +1,10 @@
 import { type NextPage } from "next";
-import Head from "next/head";
 
-import Form from "./form";
+import Form from "~/components/form";
 
 const Home: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>Takaro AFC 50th Jubilee</title>
-        <meta
-          name="description"
-          content="Register to come to Takaro AFC's 50th Jubilee celebration"
-        />
-        <link rel="icon" href="/favicon.png" />
-      </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[theme('colors.orange.takaro')] to-[#b47834]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <div className="container flex flex-col items-center justify-center gap-4">

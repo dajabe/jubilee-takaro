@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 type RegistrationFormData = {
   email: string;
@@ -27,19 +28,30 @@ const Form: NextPage = () => {
     "Eighth",
     "Ninth",
   ];
+
   // const { data } = api.registrations.getAll.useQuery();
   const [guestCount, setGuestCount] = useState(1);
 
   const { register, handleSubmit, reset } = useForm<RegistrationFormData>();
 
-  const { mutate: createRegistration } = api.registrations.create.useMutation();
-  const { mutate: sendEmail } = api.sendgrid.sendEmail.useMutation();
+  const { mutate: createRegistration, isLoading: isRegistering } =
+    api.registrations.create.useMutation({
+      onSuccess: () => {
+        toast.success(
+          "You are now registered please check your inbox for a confirmation email"
+        );
+        // reset();
+      },
+      onError: () => {
+        toast.error(
+          "Something went wrong with the registration please contact jubilee@takaroafc.co.nz"
+        );
+      },
+    });
 
   const submitHandler: SubmitHandler<RegistrationFormData> = (rego) => {
     if (rego.guests[0]) rego.guests[0].isChild = false;
-    sendEmail(rego);
     createRegistration(rego);
-    reset();
   };
 
   const incrementGuestCount = () => {
@@ -47,7 +59,15 @@ const Form: NextPage = () => {
   };
 
   const decrementGuestCount = () => {
-    if (guestCount > 1) setGuestCount(guestCount - 1);
+    if (guestCount > 1) {
+      [
+        `guests.${guestCount}.isChild`,
+        `guests.${guestCount}.firstName`,
+        `guests.${guestCount}.lastName`,
+        `guests.${guestCount}.ticketType`,
+      ];
+      setGuestCount(guestCount - 1);
+    }
   };
 
   return (

@@ -29,6 +29,7 @@ model Registrations {
   email      String
   guestCount Int
   guests     Guests[]
+  emailSent  String   @default("No")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
