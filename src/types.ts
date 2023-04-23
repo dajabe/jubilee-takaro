@@ -3,9 +3,9 @@ import { z } from "zod";
 import type { AppRouter } from "./server/api/root";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
-type allRegistrationsOutput = RouterOutput["registrations"]["getAll"];
+type allRegistrationsOutput = RouterOutput["registrations"];
 
-export type Registration = allRegistrationsOutput[number];
+export type Registration = allRegistrationsOutput;
 
 export const registrationInput = z.object({
   email: z.string().email(),
