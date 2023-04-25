@@ -9,7 +9,6 @@ export type Registration = allRegistrationsOutput;
 
 export const registrationInput = z.object({
   email: z.string().email(),
-  guestCount: z.number(),
   guests: z
     .object({
       isChild: z.boolean(),

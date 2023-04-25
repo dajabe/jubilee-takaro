@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm, useFieldArray } from "react-hook-form";
 import { api } from "~/utils/api";
-import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 type RegistrationFormData = {
@@ -10,9 +9,8 @@ type RegistrationFormData = {
     firstName: string;
     lastName: string;
     isChild: boolean;
-    ticketType: string;
+    ticketType: "both" | "saturday" | "sunday";
   }[];
-  guestCount: number;
 };
 
 const Form: NextPage = () => {
@@ -29,9 +27,23 @@ const Form: NextPage = () => {
     "Ninth",
   ];
 
-  const [guestCount, setGuestCount] = useState(1);
+  const { register, handleSubmit, reset, control } =
+    useForm<RegistrationFormData>({
+      defaultValues: {
+        guests: [
+          { firstName: "", lastName: "", isChild: false, ticketType: "both" },
+        ],
+      },
+      mode: "onBlur",
+    });
 
-  const { register, handleSubmit, reset } = useForm<RegistrationFormData>();
+  const { fields, append, remove } = useFieldArray({
+    name: "guests",
+    rules: {
+      minLength: 1,
+    },
+    control,
+  });
 
   const { mutate: createRegistration, isLoading: isRegistering } =
     api.registrations.create.useMutation({
@@ -51,22 +63,7 @@ const Form: NextPage = () => {
   const submitHandler: SubmitHandler<RegistrationFormData> = (rego) => {
     if (rego.guests[0]) rego.guests[0].isChild = false;
     createRegistration(rego);
-  };
-
-  const incrementGuestCount = () => {
-    if (guestCount < 9) setGuestCount(guestCount + 1);
-  };
-
-  const decrementGuestCount = () => {
-    if (guestCount > 1) {
-      [
-        `guests.${guestCount}.isChild`,
-        `guests.${guestCount}.firstName`,
-        `guests.${guestCount}.lastName`,
-        `guests.${guestCount}.ticketType`,
-      ];
-      setGuestCount(guestCount - 1);
-    }
+    console.log(rego);
   };
 
   return (
@@ -88,60 +85,29 @@ const Form: NextPage = () => {
           className="w-full appearance-none rounded-lg border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
         />
       </div>
-      <div className="mb-5">
-        <label
-          htmlFor="guestCount"
-          className="w-full text-sm font-semibold text-gray-700"
-        >
-          Number of attendees
-        </label>
-        <div className="relative mt-1 flex h-10 w-full flex-row rounded-lg bg-transparent">
-          <button
-            onClick={decrementGuestCount}
-            className=" h-full w-20 cursor-pointer rounded-l bg-gray-300 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700"
-          >
-            <span className="m-auto text-2xl font-thin">−</span>
-          </button>
-          <input
-            type="number"
-            className="text-md md:text-basecursor-default flex w-full items-center bg-gray-300 text-center font-semibold text-gray-700 outline-none hover:text-black focus:text-black  focus:outline-none"
-            {...register("guestCount", {
-              valueAsNumber: true,
-              min: 1,
-              max: 9,
-            })}
-            value={guestCount}
-            readOnly
-          />
-          <button
-            onClick={incrementGuestCount}
-            className="h-full w-20 cursor-pointer rounded-r bg-gray-300 text-gray-600 hover:bg-gray-400 hover:text-gray-700"
-          >
-            <span className="m-auto text-2xl font-thin">+</span>
-          </button>
-        </div>
-      </div>
       <div>
-        {Array.from({ length: guestCount }).map((_, index) => {
+        {fields.map((field, index) => {
           const wordIndex = numberWords[index] ?? "0";
           return (
-            <div key={index}>
+            <div key={field.id}>
               {index > 0 && (
-                <div className="mt-10">
-                  <hr className="mb-10 border-2 border-slate-200" />
+                <div className="mt-8">
+                  <hr className="border-2 border-slate-200" />
+                  <div className="my-5 flex-1 self-center text-xl font-bold text-slate-800">
+                    {wordIndex + " guest"}
+                  </div>
                   <div className="mb-5 flex justify-between md:text-left">
-                    <div className="flex-1 self-center text-xl font-bold text-slate-800">
-                      {wordIndex + " guest"}
-                    </div>
                     <label
-                      htmlFor={`guests.${index}.child`}
+                      htmlFor={`guests.${index}.isChild`}
                       className="inline-flex cursor-pointer items-center rounded-lg border-orange-takaro font-bold"
                     >
                       <input
-                        id={`guests.${index}.child`}
+                        id={`guests.${index}.isChild`}
                         className="peer hidden"
                         type="checkbox"
-                        {...register(`guests.${index}.isChild`)}
+                        {...register(`guests.${index}.isChild` as const, {
+                          required: true,
+                        })}
                       />
                       <span className="m-0 rounded-l-lg bg-orange-takaro px-4 py-2 text-slate-800 peer-checked:bg-slate-200">
                         Adult
@@ -150,35 +116,48 @@ const Form: NextPage = () => {
                         Child
                       </span>
                     </label>
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
               )}
               <div className="mb-4 flex flex-col">
                 <label
-                  htmlFor={`firstName-guest${wordIndex}`}
+                  htmlFor={`guests.${index}.firstName`}
                   className="mb-1 block pr-4 font-bold text-slate-800 md:mb-0 md:text-left"
                 >
                   First Name
                 </label>
                 <input
                   type="text"
-                  id={`firstName-guest${wordIndex}`}
+                  id={`guests.${index}.firstName`}
                   autoComplete="given-name"
-                  {...register(`guests.${index}.firstName`, { required: true })}
+                  {...register(`guests.${index}.firstName` as const, {
+                    required: true,
+                  })}
+                  defaultValue={field.firstName}
                   className="w-full appearance-none rounded-lg border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
                 />
               </div>
               <div className="mb-4 flex flex-col">
                 <label
-                  htmlFor={`lastName-guest${wordIndex}`}
+                  htmlFor={`guests.${index}.lastName`}
                   className="mb-1 block pr-4 font-bold text-slate-800 md:mb-0 md:text-left"
                 >
                   Last Name
                 </label>
                 <input
                   type="text"
-                  id={`lastName-guest${wordIndex}`}
-                  {...register(`guests.${index}.lastName`, { required: true })}
+                  id={`guests.${index}.lastName`}
+                  {...register(`guests.${index}.lastName` as const, {
+                    required: true,
+                  })}
+                  defaultValue={field.lastName}
                   className="w-full appearance-none rounded-lg border-2 border-slate-200 bg-slate-100 px-4 py-2 leading-tight text-slate-800 focus:border-orange-takaro focus:bg-white focus:outline-none"
                 />
               </div>
@@ -187,7 +166,20 @@ const Form: NextPage = () => {
               </div>
               <div className="mb-5 grid w-full gap-2 font-bold md:grid-cols-3">
                 <input
-                  {...register(`guests.${index}.ticketType`)}
+                  {...register(`guests.${index}.ticketType` as const)}
+                  id={`both-guest${wordIndex}`}
+                  type="radio"
+                  value="both"
+                  className={`peer/both hidden`}
+                />
+                <label
+                  htmlFor={`both-guest${wordIndex}`}
+                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:border-orange-takaro peer-checked/both:text-orange-800`}
+                >
+                  Both
+                </label>
+                <input
+                  {...register(`guests.${index}.ticketType` as const)}
                   id={`saturday-guest${wordIndex}`}
                   type="radio"
                   value="saturday"
@@ -200,7 +192,7 @@ const Form: NextPage = () => {
                   Saturday
                 </label>
                 <input
-                  {...register(`guests.${index}.ticketType`)}
+                  {...register(`guests.${index}.ticketType` as const)}
                   id={`sunday-guest${wordIndex}`}
                   type="radio"
                   value="sunday"
@@ -212,31 +204,34 @@ const Form: NextPage = () => {
                 >
                   Sunday
                 </label>
-                <input
-                  {...register(`guests.${index}.ticketType`)}
-                  id={`both-guest${wordIndex}`}
-                  type="radio"
-                  value="both"
-                  className={`peer/both hidden`}
-                />
-                <label
-                  htmlFor={`both-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:border-orange-takaro peer-checked/both:text-orange-800`}
-                >
-                  Both
-                </label>
               </div>
             </div>
           );
         })}
       </div>
+      <div className="mt-10 flex justify-between">
+        <button
+          type="button"
+          onClick={() =>
+            append({
+              firstName: "",
+              lastName: "",
+              isChild: false,
+              ticketType: "both" as const,
+            })
+          }
+          className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
+        >
+          <span className="m-auto">Add Guest</span>
+        </button>
 
-      <button
-        className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
-        type="submit"
-      >
-        Register
-      </button>
+        <button
+          className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
+          type="submit"
+        >
+          Register
+        </button>
+      </div>
     </form>
   );
 };

@@ -16,8 +16,6 @@ export const registrationsRouter = createTRPCRouter({
   create: publicProcedure
     .input(registrationInput)
     .mutation(async ({ ctx, input }) => {
-      if (input.guests[0]) input.guests[0].isChild = false;
-
       const emailGuestData: MailDataRequired = {
         to: input.email,
         from: "takarojubilee@dajabe.nz",
@@ -36,7 +34,7 @@ export const registrationsRouter = createTRPCRouter({
         const newRegistration = await ctx.prisma.registrations.create({
           data: {
             email: input.email,
-            guestCount: input.guestCount,
+            guestCount: input.guests.length,
             guests: {
               createMany: {
                 data: input.guests,
