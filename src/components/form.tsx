@@ -9,7 +9,7 @@ type RegistrationFormData = {
     firstName: string;
     lastName: string;
     isChild: boolean;
-    ticketType: "both" | "saturday" | "sunday";
+    ticketType: "both" | "saturday" | "friday";
   }[];
 };
 
@@ -91,7 +91,7 @@ const Form: NextPage = () => {
           return (
             <div key={field.id}>
               {index > 0 && (
-                <div className="mt-8">
+                <div className="mt-6">
                   <hr className="border-2 border-slate-200" />
                   <div className="my-5 flex-1 self-center text-xl font-bold text-slate-800">
                     {wordIndex + " guest"}
@@ -119,7 +119,7 @@ const Form: NextPage = () => {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
+                      className="focus:shadow-outline rounded-lg bg-slate-700 px-4 py-2 font-bold text-slate-100 shadow hover:bg-red-800 focus:outline-none"
                     >
                       Remove
                     </button>
@@ -174,9 +174,24 @@ const Form: NextPage = () => {
                 />
                 <label
                   htmlFor={`both-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:border-orange-takaro peer-checked/both:text-orange-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:border-orange-takaro peer-checked/both:text-orange-800`}
                 >
-                  Both
+                  <span className="self-center">Both</span>{" "}
+                  <span className="self-center">$100</span>
+                </label>
+                <input
+                  {...register(`guests.${index}.ticketType` as const)}
+                  id={`friday-guest${wordIndex}`}
+                  type="radio"
+                  value="friday"
+                  className={`peer/friday hidden`}
+                />
+                <label
+                  htmlFor={`friday-guest${wordIndex}`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/friday:border-orange-takaro peer-checked/friday:text-orange-800`}
+                >
+                  <span className="self-center">Friday</span>
+                  <span className="self-center">$25</span>
                 </label>
                 <input
                   {...register(`guests.${index}.ticketType` as const)}
@@ -187,22 +202,10 @@ const Form: NextPage = () => {
                 />
                 <label
                   htmlFor={`saturday-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/saturday:border-orange-takaro peer-checked/saturday:text-orange-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/saturday:border-orange-takaro peer-checked/saturday:text-orange-800`}
                 >
-                  Saturday
-                </label>
-                <input
-                  {...register(`guests.${index}.ticketType` as const)}
-                  id={`sunday-guest${wordIndex}`}
-                  type="radio"
-                  value="sunday"
-                  className={`peer/sunday hidden`}
-                />
-                <label
-                  htmlFor={`sunday-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/sunday:border-orange-takaro peer-checked/sunday:text-orange-800`}
-                >
-                  Sunday
+                  <span className="self-center">Saturday</span>
+                  <span className="self-center">$85</span>
                 </label>
               </div>
             </div>
