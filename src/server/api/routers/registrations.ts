@@ -7,6 +7,8 @@ import { generateAdminEmail, generateGuestEmail } from "~/utils/generateEmail";
 if (process.env.SENDGRID_API_KEY)
   sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 
+const adminEmail = process.env.ADMIN_EMAIL || "test@test.com";
+
 export const registrationsRouter = createTRPCRouter({
   // This needs to be a protected proceedure
   // getAll: publicProcedure.query(({ ctx }) => {
@@ -18,16 +20,22 @@ export const registrationsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const emailGuestData: MailDataRequired = {
         to: input.email,
-        from: "takarojubilee@dajabe.nz",
+        from: adminEmail,
         subject: "Takaro 50th Jubilee Registration",
         html: generateGuestEmail(input.guests),
+        mailSettings: {
+          sandboxMode: { enable: true },
+        },
       };
 
       const emailAdminData: MailDataRequired = {
-        to: "takarojubilee@dajabe.nz",
-        from: "takarojublee@dajabe.nz",
+        to: adminEmail,
+        from: adminEmail,
         subject: "New Jubilee Registration",
         html: generateAdminEmail(input.guests),
+        mailSettings: {
+          sandboxMode: { enable: true },
+        },
       };
 
       try {
