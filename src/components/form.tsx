@@ -27,6 +27,13 @@ const Form: NextPage = () => {
     "Ninth",
   ];
 
+  const ticketPrices = {
+    child: 10,
+    friday: 25,
+    saturday: 85,
+    both: 100,
+  };
+
   const { register, handleSubmit, reset, control } =
     useForm<RegistrationFormData>({
       defaultValues: {
@@ -174,10 +181,10 @@ const Form: NextPage = () => {
                 />
                 <label
                   htmlFor={`both-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:border-orange-takaro peer-checked/both:text-orange-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:bg-orange-takaro peer-checked/both:text-slate-800`}
                 >
-                  <span className="self-center">Both</span>{" "}
-                  <span className="self-center">$100</span>
+                  <span className="self-center">Both days</span>{" "}
+                  <span className="self-center">${ticketPrices.both}</span>
                 </label>
                 <input
                   {...register(`guests.${index}.ticketType` as const)}
@@ -188,10 +195,10 @@ const Form: NextPage = () => {
                 />
                 <label
                   htmlFor={`friday-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/friday:border-orange-takaro peer-checked/friday:text-orange-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/friday:bg-orange-takaro peer-checked/friday:text-slate-800`}
                 >
                   <span className="self-center">Friday</span>
-                  <span className="self-center">$25</span>
+                  <span className="self-center">${ticketPrices.friday}</span>
                 </label>
                 <input
                   {...register(`guests.${index}.ticketType` as const)}
@@ -202,10 +209,10 @@ const Form: NextPage = () => {
                 />
                 <label
                   htmlFor={`saturday-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/saturday:border-orange-takaro peer-checked/saturday:text-orange-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/saturday:bg-orange-takaro peer-checked/saturday:text-slate-800`}
                 >
                   <span className="self-center">Saturday</span>
-                  <span className="self-center">$85</span>
+                  <span className="self-center">${ticketPrices.saturday}</span>
                 </label>
               </div>
             </div>
@@ -223,13 +230,13 @@ const Form: NextPage = () => {
               ticketType: "both" as const,
             })
           }
-          className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
+          className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-900 shadow hover:bg-orange-400 focus:outline-none"
         >
           <span className="m-auto">Add Guest</span>
         </button>
 
         <button
-          className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-100 shadow hover:bg-orange-400 focus:outline-none"
+          className="focus:shadow-outline rounded-lg bg-orange-takaro px-4 py-2 font-bold text-slate-900 shadow hover:bg-orange-400 focus:outline-none"
           type="submit"
         >
           Register
