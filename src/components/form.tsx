@@ -1,5 +1,11 @@
 import type { NextPage } from "next";
-import { type SubmitHandler, useForm, useFieldArray } from "react-hook-form";
+import {
+  type SubmitHandler,
+  useForm,
+  useFieldArray,
+  type Control,
+  useWatch,
+} from "react-hook-form";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 
@@ -68,14 +74,35 @@ const Form: NextPage = () => {
     });
 
   const submitHandler: SubmitHandler<RegistrationFormData> = (rego) => {
-    if (rego.guests[0]) rego.guests[0].isChild = false;
-    createRegistration(rego);
+    // if (rego.guests[0]) rego.guests[0].isChild = false;
+    // createRegistration(rego);
     console.log(rego);
+  };
+
+  const Total = ({ control }: { control: Control<RegistrationFormData> }) => {
+    const guests = useWatch({
+      name: "guests",
+      control,
+    });
+
+    const total = guests.reduce((acc, guest) => {
+      if (guest.isChild) {
+        return acc + ticketPrices.child;
+      }
+      if (guest.ticketType === "friday") {
+        return acc + ticketPrices.friday;
+      }
+      if (guest.ticketType === "saturday") {
+        return acc + ticketPrices.saturday;
+      }
+      return acc + ticketPrices.both;
+    }, 0);
+    return <div>Total: ${total}</div>;
   };
 
   return (
     <form
-      className="mb-4 rounded-lg bg-white px-8 pb-8 pt-6 shadow-md"
+      className="mb-4 rounded-lg bg-slate-100 px-8 pb-8 pt-6 shadow-md"
       onSubmit={handleSubmit(submitHandler)}
     >
       <div className="mb-4 flex flex-col">
@@ -171,7 +198,7 @@ const Form: NextPage = () => {
               <div className="mb-2 block font-bold text-slate-800 md:mb-0 md:text-left">
                 Which days will {index > 0 ? "they" : "you"} attend?
               </div>
-              <div className="mb-5 grid w-full gap-2 font-bold md:grid-cols-3">
+              <div className="mb-5 grid w-full gap-4 font-bold md:grid-cols-3">
                 <input
                   {...register(`guests.${index}.ticketType` as const)}
                   id={`both-guest${wordIndex}`}
@@ -184,7 +211,9 @@ const Form: NextPage = () => {
                   className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:bg-orange-takaro peer-checked/both:text-slate-800`}
                 >
                   <span className="self-center">Both days</span>{" "}
-                  <span className="self-center">${ticketPrices.both}</span>
+                  <span className="self-center">
+                    ${field.isChild ? ticketPrices.child : ticketPrices.both}
+                  </span>
                 </label>
                 <input
                   {...register(`guests.${index}.ticketType` as const)}
@@ -219,6 +248,7 @@ const Form: NextPage = () => {
           );
         })}
       </div>
+      <Total control={control} />
       <div className="mt-10 flex justify-between">
         <button
           type="button"

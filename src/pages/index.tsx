@@ -21,7 +21,7 @@ const Home: NextPage = () => {
               <br />
             </p>
           </div>
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-xl">
             <Form />
           </div>
         </div>
