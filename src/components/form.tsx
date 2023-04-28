@@ -11,13 +11,16 @@ import { toast } from "react-hot-toast";
 
 type RegistrationFormData = {
   email: string;
-  guests: {
-    firstName: string;
-    lastName: string;
-    isChild: boolean;
-    ticketType: "both" | "saturday" | "friday";
-  }[];
+  amount: number;
+  guests: GuestData;
 };
+
+type GuestData = {
+  firstName: string;
+  lastName: string;
+  isChild: boolean;
+  ticketType: "both" | "saturday" | "friday";
+}[];
 
 const Form: NextPage = () => {
   const numberWords = [
@@ -40,7 +43,7 @@ const Form: NextPage = () => {
     both: 100,
   };
 
-  const { register, handleSubmit, reset, control } =
+  const { register, handleSubmit, reset, control, setValue, watch } =
     useForm<RegistrationFormData>({
       defaultValues: {
         guests: [
@@ -79,13 +82,8 @@ const Form: NextPage = () => {
     console.log(rego);
   };
 
-  const Total = ({ control }: { control: Control<RegistrationFormData> }) => {
-    const guests = useWatch({
-      name: "guests",
-      control,
-    });
-
-    const total = guests.reduce((acc, guest) => {
+  const calcTotal = (g: GuestData): number => {
+    const total = g.reduce((acc, guest) => {
       if (guest.isChild) {
         return acc + ticketPrices.child;
       }
@@ -97,7 +95,17 @@ const Form: NextPage = () => {
       }
       return acc + ticketPrices.both;
     }, 0);
-    return <div>Total: ${total}</div>;
+
+    return total;
+  };
+
+  const Total = ({ control }: { control: Control<RegistrationFormData> }) => {
+    const guests = useWatch({
+      name: "guests",
+      control,
+    });
+
+    return <div>Total: ${calcTotal(guests)}</div>;
   };
 
   return (
@@ -122,6 +130,7 @@ const Form: NextPage = () => {
       <div>
         {fields.map((field, index) => {
           const wordIndex = numberWords[index] ?? "0";
+          const watchChild = watch(`guests.${index}.isChild`);
           return (
             <div key={field.id}>
               {index > 0 && (
@@ -141,6 +150,13 @@ const Form: NextPage = () => {
                         type="checkbox"
                         {...register(`guests.${index}.isChild` as const, {
                           required: true,
+                          value: false,
+                          onChange: (
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            if (e.target.checked)
+                              setValue(`guests.${index}.ticketType`, "friday");
+                          },
                         })}
                       />
                       <span className="m-0 rounded-l-lg bg-orange-takaro px-4 py-2 text-slate-800 peer-checked:bg-slate-200">
@@ -200,23 +216,28 @@ const Form: NextPage = () => {
               </div>
               <div className="mb-5 grid w-full gap-4 font-bold md:grid-cols-3">
                 <input
-                  {...register(`guests.${index}.ticketType` as const)}
+                  {...register(`guests.${index}.ticketType` as const, {
+                    required: true,
+                  })}
                   id={`both-guest${wordIndex}`}
                   type="radio"
                   value="both"
                   className={`peer/both hidden`}
+                  disabled={watchChild}
                 />
                 <label
                   htmlFor={`both-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/both:bg-orange-takaro peer-checked/both:text-slate-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 ${
+                    watchChild ? "text-slate-200" : "text-slate-700"
+                  } hover:bg-slate-100 peer-checked/both:bg-orange-takaro peer-checked/both:text-slate-800`}
                 >
                   <span className="self-center">Both days</span>{" "}
-                  <span className="self-center">
-                    ${field.isChild ? ticketPrices.child : ticketPrices.both}
-                  </span>
+                  <span className="self-center">${ticketPrices.both}</span>
                 </label>
                 <input
-                  {...register(`guests.${index}.ticketType` as const)}
+                  {...register(`guests.${index}.ticketType` as const, {
+                    required: true,
+                  })}
                   id={`friday-guest${wordIndex}`}
                   type="radio"
                   value="friday"
@@ -224,23 +245,30 @@ const Form: NextPage = () => {
                 />
                 <label
                   htmlFor={`friday-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/friday:bg-orange-takaro peer-checked/friday:text-slate-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-700 hover:bg-slate-100 peer-checked/friday:bg-orange-takaro peer-checked/friday:text-slate-800`}
                 >
                   <span className="self-center">Friday</span>
-                  <span className="self-center">${ticketPrices.friday}</span>
+                  <span className="self-center">
+                    ${watchChild ? ticketPrices.child : ticketPrices.friday}
+                  </span>
                 </label>
                 <input
-                  {...register(`guests.${index}.ticketType` as const)}
+                  {...register(`guests.${index}.ticketType` as const, {
+                    required: true,
+                  })}
                   id={`saturday-guest${wordIndex}`}
                   type="radio"
                   value="saturday"
                   className={`peer/saturday hidden`}
+                  disabled={watchChild}
                 />
                 <label
                   htmlFor={`saturday-guest${wordIndex}`}
-                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 peer-checked/saturday:bg-orange-takaro peer-checked/saturday:text-slate-800`}
+                  className={`inline-flex w-full cursor-pointer flex-col place-content-center rounded-lg border border-slate-200 bg-white p-2 ${
+                    watchChild ? "text-slate-200" : "text-slate-700"
+                  } hover:bg-slate-100 peer-checked/saturday:bg-orange-takaro peer-checked/saturday:text-slate-800`}
                 >
-                  <span className="self-center">Saturday</span>
+                  <span className="self-center">Saturday (R18)</span>
                   <span className="self-center">${ticketPrices.saturday}</span>
                 </label>
               </div>
