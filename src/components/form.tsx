@@ -8,6 +8,7 @@ import {
 } from "react-hook-form";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
+import { type GuestSchema, type RegistrationSchema } from "~/types";
 
 type RegistrationFormData = {
   email: string;
@@ -43,15 +44,22 @@ const Form: NextPage = () => {
     both: 100,
   };
 
-  const { register, handleSubmit, reset, control, setValue, watch } =
-    useForm<RegistrationFormData>({
-      defaultValues: {
-        guests: [
-          { firstName: "", lastName: "", isChild: false, ticketType: "both" },
-        ],
-      },
-      mode: "onBlur",
-    });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<RegistrationSchema>({
+    defaultValues: {
+      guests: [
+        { firstName: "", lastName: "", isChild: false, ticketType: "both" },
+      ],
+    },
+    mode: "onBlur",
+  });
 
   const { fields, append, remove } = useFieldArray({
     name: "guests",
@@ -76,13 +84,14 @@ const Form: NextPage = () => {
       },
     });
 
-  const submitHandler: SubmitHandler<RegistrationFormData> = (rego) => {
+  const submitHandler: SubmitHandler<RegistrationSchema> = (rego) => {
     // if (rego.guests[0]) rego.guests[0].isChild = false;
-    // createRegistration(rego);
+    rego.amount = calcTotal(rego.guests);
+    createRegistration(rego);
     console.log(rego);
   };
 
-  const calcTotal = (g: GuestData): number => {
+  const calcTotal = (g: GuestSchema): number => {
     const total = g.reduce((acc, guest) => {
       if (guest.isChild) {
         return acc + ticketPrices.child;
@@ -99,13 +108,16 @@ const Form: NextPage = () => {
     return total;
   };
 
-  const Total = ({ control }: { control: Control<RegistrationFormData> }) => {
+  const Total = ({ control }: { control: Control<RegistrationSchema> }) => {
     const guests = useWatch({
       name: "guests",
       control,
     });
 
-    return <div>Total: ${calcTotal(guests)}</div>;
+    const total = calcTotal(guests);
+
+    // setValue("amount", total);
+    return <div>Total: {total}</div>;
   };
 
   return (
@@ -133,49 +145,46 @@ const Form: NextPage = () => {
           const watchChild = watch(`guests.${index}.isChild`);
           return (
             <div key={field.id}>
-              {index > 0 && (
-                <div className="mt-6">
-                  <hr className="border-2 border-slate-200" />
-                  <div className="my-5 flex-1 self-center text-xl font-bold text-slate-800">
-                    {wordIndex + " guest"}
-                  </div>
-                  <div className="mb-5 flex justify-between md:text-left">
-                    <label
-                      htmlFor={`guests.${index}.isChild`}
-                      className="inline-flex cursor-pointer items-center rounded-lg border-orange-takaro font-bold"
-                    >
-                      <input
-                        id={`guests.${index}.isChild`}
-                        className="peer hidden"
-                        type="checkbox"
-                        {...register(`guests.${index}.isChild` as const, {
-                          required: true,
-                          value: false,
-                          onChange: (
-                            e: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            if (e.target.checked)
-                              setValue(`guests.${index}.ticketType`, "friday");
-                          },
-                        })}
-                      />
-                      <span className="m-0 rounded-l-lg bg-orange-takaro px-4 py-2 text-slate-800 peer-checked:bg-slate-200">
-                        Adult
-                      </span>
-                      <span className="m-0 rounded-r-lg bg-slate-200 px-4 py-2 peer-checked:bg-orange-takaro">
-                        Child
-                      </span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="focus:shadow-outline rounded-lg bg-slate-700 px-4 py-2 font-bold text-slate-100 shadow hover:bg-red-800 focus:outline-none"
-                    >
-                      Remove
-                    </button>
-                  </div>
+              {/* {index > 0 && ( */}
+              <div className={`mt-6 ${index ? "" : "hidden"}`}>
+                <hr className="border-2 border-slate-200" />
+                <div className="my-5 flex-1 self-center text-xl font-bold text-slate-800">
+                  {wordIndex + " guest"}
                 </div>
-              )}
+                <div className="mb-5 flex justify-between md:text-left">
+                  <label
+                    htmlFor={`guests.${index}.isChild`}
+                    className={`inline-flex cursor-pointer items-center rounded-lg border-orange-takaro font-bold`}
+                  >
+                    <input
+                      id={`guests.${index}.isChild`}
+                      className="peer hidden"
+                      type="checkbox"
+                      {...register(`guests.${index}.isChild` as const, {
+                        value: false,
+                        onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                          if (e.target.checked)
+                            setValue(`guests.${index}.ticketType`, "friday");
+                        },
+                      })}
+                    />
+                    <span className="m-0 rounded-l-lg bg-orange-takaro px-4 py-2 text-slate-800 peer-checked:bg-slate-200">
+                      Adult
+                    </span>
+                    <span className="m-0 rounded-r-lg bg-slate-200 px-4 py-2 peer-checked:bg-orange-takaro">
+                      Child
+                    </span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="focus:shadow-outline rounded-lg bg-slate-700 px-4 py-2 font-bold text-slate-100 shadow hover:bg-red-800 focus:outline-none"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              {/* )} */}
               <div className="mb-4 flex flex-col">
                 <label
                   htmlFor={`guests.${index}.firstName`}
@@ -216,9 +225,7 @@ const Form: NextPage = () => {
               </div>
               <div className="mb-5 grid w-full gap-4 font-bold md:grid-cols-3">
                 <input
-                  {...register(`guests.${index}.ticketType` as const, {
-                    required: true,
-                  })}
+                  {...register(`guests.${index}.ticketType` as const)}
                   id={`both-guest${wordIndex}`}
                   type="radio"
                   value="both"
@@ -235,9 +242,7 @@ const Form: NextPage = () => {
                   <span className="self-center">${ticketPrices.both}</span>
                 </label>
                 <input
-                  {...register(`guests.${index}.ticketType` as const, {
-                    required: true,
-                  })}
+                  {...register(`guests.${index}.ticketType` as const)}
                   id={`friday-guest${wordIndex}`}
                   type="radio"
                   value="friday"
@@ -253,9 +258,7 @@ const Form: NextPage = () => {
                   </span>
                 </label>
                 <input
-                  {...register(`guests.${index}.ticketType` as const, {
-                    required: true,
-                  })}
+                  {...register(`guests.${index}.ticketType` as const)}
                   id={`saturday-guest${wordIndex}`}
                   type="radio"
                   value="saturday"

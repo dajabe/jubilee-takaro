@@ -28,6 +28,7 @@ model Registrations {
   id         Int      @id @default(autoincrement())
   email      String
   guestCount Int
+  amount     Int
   guests     Guests[]
   emailSent  String   @default("No")
   createdAt  DateTime @default(now())

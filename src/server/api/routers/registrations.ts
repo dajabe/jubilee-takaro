@@ -43,6 +43,7 @@ export const registrationsRouter = createTRPCRouter({
           data: {
             email: input.email,
             guestCount: input.guests.length,
+            amount: input.amount,
             guests: {
               createMany: {
                 data: input.guests,
@@ -51,13 +52,9 @@ export const registrationsRouter = createTRPCRouter({
           },
         });
 
-        console.log({ newRegistration });
-
         const sendGuestEmail = await sendgrid.send(emailGuestData);
-        console.log({ sendGuestEmail });
 
         const sendAdminEmail = await sendgrid.send(emailAdminData);
-        console.log({ sendAdminEmail });
 
         return { message: "User registration successful!" };
       } catch (err) {
