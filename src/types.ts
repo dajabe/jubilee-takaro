@@ -24,7 +24,6 @@ export const registrationInput = z.object({
     .email({ message: "Must be a valid email" })
     .refine(
       (e) => {
-        console.log({ email: e });
         return true;
       },
       { message: "Email address unreachable" }

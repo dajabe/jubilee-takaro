@@ -8,42 +8,15 @@ import {
 } from "react-hook-form";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
-import { type GuestSchema, type RegistrationSchema } from "~/types";
-
-type RegistrationFormData = {
-  email: string;
-  amount: number;
-  guests: GuestData;
-};
-
-type GuestData = {
-  firstName: string;
-  lastName: string;
-  isChild: boolean;
-  ticketType: "both" | "saturday" | "friday";
-}[];
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  registrationInput,
+  type GuestSchema,
+  type RegistrationSchema,
+} from "~/types";
+import { numberWords, ticketPrices } from "~/utils/generics";
 
 const Form: NextPage = () => {
-  const numberWords = [
-    "Zero",
-    "First",
-    "Second",
-    "Third",
-    "Fourth",
-    "Fifth",
-    "Sixth",
-    "Seventh",
-    "Eighth",
-    "Ninth",
-  ];
-
-  const ticketPrices = {
-    child: 10,
-    friday: 25,
-    saturday: 85,
-    both: 100,
-  };
-
   const {
     register,
     handleSubmit,
@@ -54,10 +27,13 @@ const Form: NextPage = () => {
     formState: { errors },
   } = useForm<RegistrationSchema>({
     defaultValues: {
+      email: "",
+      amount: 0,
       guests: [
         { firstName: "", lastName: "", isChild: false, ticketType: "both" },
       ],
     },
+    resolver: zodResolver(registrationInput),
     mode: "onBlur",
   });
 
@@ -85,10 +61,8 @@ const Form: NextPage = () => {
     });
 
   const submitHandler: SubmitHandler<RegistrationSchema> = (rego) => {
-    // if (rego.guests[0]) rego.guests[0].isChild = false;
     rego.amount = calcTotal(rego.guests);
     createRegistration(rego);
-    console.log(rego);
   };
 
   const calcTotal = (g: GuestSchema): number => {
@@ -113,10 +87,8 @@ const Form: NextPage = () => {
       name: "guests",
       control,
     });
-
     const total = calcTotal(guests);
 
-    // setValue("amount", total);
     return <div>Total: {total}</div>;
   };
 

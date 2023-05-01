@@ -25,14 +25,14 @@ generator client {
 }
 
 model Registrations {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   email      String
   guestCount Int
   amount     Int
   guests     Guests[]
-  emailSent  String   @default("No")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  emailSent  DateTime? @db.Timestamp(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Guests {

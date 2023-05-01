@@ -1,5 +1,6 @@
 // import { z } from "zod";
 import sendgrid, { type MailDataRequired } from "@sendgrid/mail";
+import { timeStamp } from "console";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { registrationInput } from "~/types";
 import { generateAdminEmail, generateGuestEmail } from "~/utils/generateEmail";
@@ -39,27 +40,44 @@ export const registrationsRouter = createTRPCRouter({
       };
 
       try {
-        const newRegistration = await ctx.prisma.registrations.create({
-          data: {
-            email: input.email,
-            guestCount: input.guests.length,
-            amount: input.amount,
-            guests: {
-              createMany: {
-                data: input.guests,
+        await ctx.prisma.$transaction(async (tx) => {
+          const registration = await tx.registrations.create({
+            data: {
+              email: input.email,
+              guestCount: input.guests.length,
+              amount: input.amount,
+              guests: {
+                createMany: {
+                  data: input.guests,
+                },
               },
             },
-          },
+          });
+
+          const sendAdminEmail = await sendgrid.send(emailAdminData);
+          if (!sendAdminEmail) {
+            throw new Error("Sending admin email failed");
+          }
+
+          const sendGuestEmail = await sendgrid.send(emailGuestData);
+          if (!sendGuestEmail) {
+            throw new Error("Sending guest email failed");
+          }
+
+          await tx.registrations.update({
+            where: {
+              id: registration.id,
+            },
+            data: {
+              emailSent: new Date(),
+            },
+          });
+
+          return { message: "User registration successful!" };
         });
-
-        const sendGuestEmail = await sendgrid.send(emailGuestData);
-
-        const sendAdminEmail = await sendgrid.send(emailAdminData);
-
-        return { message: "User registration successful!" };
       } catch (err) {
         console.error(err);
-        return { error: "User registration failed" };
+        throw new Error("User registration failed");
       }
     }),
 });
