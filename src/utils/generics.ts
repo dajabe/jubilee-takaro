@@ -11,7 +11,7 @@ export const numberWords = [
   "Ninth",
 ];
 
-export const ticketPrices = {
+export const ticketPrices: Record<string, number> = {
   child: 10,
   friday: 25,
   saturday: 85,

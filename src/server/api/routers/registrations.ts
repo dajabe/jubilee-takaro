@@ -22,7 +22,7 @@ export const registrationsRouter = createTRPCRouter({
         to: input.email,
         from: adminEmail,
         subject: "Takaro 50th Jubilee Registration",
-        html: generateGuestEmail(input.guests),
+        html: generateGuestEmail(input.guests, input.amount),
         mailSettings: {
           sandboxMode: { enable: true },
         },
