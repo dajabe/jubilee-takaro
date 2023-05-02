@@ -1,6 +1,5 @@
 // import { z } from "zod";
 import sendgrid, { type MailDataRequired } from "@sendgrid/mail";
-import { timeStamp } from "console";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { registrationInput } from "~/types";
 import { generateAdminEmail, generateGuestEmail } from "~/utils/generateEmail";
