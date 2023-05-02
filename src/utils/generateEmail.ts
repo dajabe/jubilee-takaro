@@ -18,7 +18,7 @@ export function generateGuestEmail(
       </tr>`
     );
   }, "");
-  /* HTML */
+
   const content = html`<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -57,6 +57,7 @@ export function generateGuestEmail(
         </table>
       </body>
     </html>`;
+
   return content;
 }
 

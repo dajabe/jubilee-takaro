@@ -8,12 +8,14 @@ type allRegistrationsOutput = RouterOutput["registrations"];
 
 export type Registration = allRegistrationsOutput;
 
+export const TicketInput = z.enum(["child", "friday", "saturday", "both"]);
+
 export const guestsInput = z
   .object({
     isChild: z.boolean(),
     firstName: z.string().min(1, { message: "Please enter a first name" }),
     lastName: z.string().min(1, { message: "Please enter a last name" }),
-    ticketType: z.string().min(4).max(8),
+    ticketType: TicketInput,
   })
   .array();
 
@@ -31,6 +33,12 @@ export const registrationInput = z.object({
   amount: z.number(),
   guests: guestsInput,
 });
+
+export type TicketType = z.infer<typeof TicketInput>;
+
+export type TicketPrices = {
+  [key in TicketType]: number;
+};
 
 export type RegistrationSchema = z.infer<typeof registrationInput>;
 

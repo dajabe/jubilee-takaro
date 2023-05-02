@@ -1,3 +1,5 @@
+import { type TicketPrices } from "~/types";
+
 export const numberWords = [
   "Zero",
   "First",
@@ -11,7 +13,7 @@ export const numberWords = [
   "Ninth",
 ];
 
-export const ticketPrices: Record<string, number> = {
+export const ticketPrices: TicketPrices = {
   child: 10,
   friday: 25,
   saturday: 85,
