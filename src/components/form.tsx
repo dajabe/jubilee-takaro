@@ -51,7 +51,7 @@ const Form: NextPage = () => {
         toast.success(
           "You are now registered please check your inbox for a confirmation email"
         );
-        // reset();
+        reset();
       },
       onError: () => {
         toast.error(
