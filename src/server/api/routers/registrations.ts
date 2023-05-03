@@ -32,9 +32,9 @@ export const registrationsRouter = createTRPCRouter({
         to: adminEmail,
         from: adminEmail,
         subject: "New Jubilee Registration",
-        html: generateAdminEmail(input.guests),
+        html: generateAdminEmail(input.guests, input.amount),
         mailSettings: {
-          sandboxMode: { enable: true },
+          sandboxMode: { enable: false },
         },
       };
 
