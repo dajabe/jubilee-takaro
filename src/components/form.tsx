@@ -89,7 +89,11 @@ const Form: NextPage = () => {
     });
     const total = calcTotal(guests);
 
-    return <div>Total: {total}</div>;
+    return (
+      <div className="w-full text-end text-xl font-bold text-slate-800">
+        Total: ${total}
+      </div>
+    );
   };
 
   return (
@@ -252,7 +256,7 @@ const Form: NextPage = () => {
         })}
       </div>
       <Total control={control} />
-      <div className="mt-10 flex justify-between">
+      <div className="mt-6 flex justify-between">
         <button
           type="button"
           onClick={() =>
