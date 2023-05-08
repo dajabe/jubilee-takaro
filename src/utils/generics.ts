@@ -14,8 +14,8 @@ export const numberWords = [
 ];
 
 export const ticketPrices: TicketPrices = {
-  child: 10,
-  friday: 25,
-  saturday: 85,
-  both: 100,
+  child: 0,
+  friday: 0,
+  saturday: 65,
+  both: 65,
 };

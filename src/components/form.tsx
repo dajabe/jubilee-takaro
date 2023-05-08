@@ -101,6 +101,18 @@ const Form: NextPage = () => {
       className="mb-4 rounded-lg bg-slate-100 px-8 pb-8 pt-6 shadow-md"
       onSubmit={handleSubmit(submitHandler)}
     >
+      <div className="flex flex-col items-center gap-2">
+        <h1 className="mb-4 text-5xl font-extrabold tracking-tight text-slate-800 drop-shadow-xl sm:text-[5rem]">
+          50<sup>th</sup> JUBILEE
+        </h1>
+        <p className=" text-2xl text-slate-800">
+          Register here to join the Takaro AFC 50th Jubilee celebration!
+        </p>
+        <p className="mb-6 text-lg text-slate-800">
+          To confirm numbers for registrations please ensure you have completed
+          and paid by the 24th of May.
+        </p>
+      </div>
       <div className="mb-4 flex flex-col">
         <label
           htmlFor="email"
@@ -247,7 +259,7 @@ const Form: NextPage = () => {
                     watchChild ? "text-slate-200" : "text-slate-700"
                   } hover:bg-slate-100 peer-checked/saturday:bg-orange-takaro peer-checked/saturday:text-slate-800`}
                 >
-                  <span className="self-center">Saturday (R18)</span>
+                  <span className="self-center">Saturday (Adults)</span>
                   <span className="self-center">${ticketPrices.saturday}</span>
                 </label>
               </div>
