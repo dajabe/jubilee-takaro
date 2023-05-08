@@ -1,4 +1,4 @@
-import { withClerkMiddleware } from "@clerk/nextjs/server";
+import { withClerkMiddleware, getAuth } from "@clerk/nextjs/server";
 import { authMiddleware } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { type NextApiRequest, type NextApiResponse } from "next";
@@ -9,13 +9,16 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 const publicPaths = ["/", "/sign-in*", "/sign-up*"];
 
 const isPublic = (path: string) => {
-  return publicPaths.some((x) =>
-    path.match(new RegExp(`^${x}$`.replace("*$", "($|/)")))
-  );
+  return publicPaths.some((x) => {
+    console.log({ path, x });
+    path.match(new RegExp(`^${x}$`.replace("*$", "($|/)")));
+  });
 };
 
-export default authMiddleware((req) => {
-  if (isPublic(req.nextUrl.pathname)) {
+export default withClerkMiddleware((req) => {
+  console.log(req.nextUrl.pathname);
+  // return NextResponse.next();
+  if (req.nextUrl.pathname === "/") {
     return NextResponse.next();
   }
 
@@ -26,7 +29,7 @@ export default authMiddleware((req) => {
     signInUrl.searchParams.set("redirect_to", req.url);
     return NextResponse.redirect(signInUrl);
   }
-  return NextRequest.next();
+  return NextResponse.next();
 });
 
 export const config = {
