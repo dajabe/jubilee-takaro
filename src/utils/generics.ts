@@ -16,6 +16,6 @@ export const numberWords = [
 export const ticketPrices: TicketPrices = {
   child: 0,
   friday: 0,
-  saturday: 65,
-  both: 65,
+  saturday: 60,
+  both: 60,
 };
