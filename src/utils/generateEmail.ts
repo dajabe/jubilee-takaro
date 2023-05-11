@@ -34,16 +34,16 @@ export function generateGuestEmail(
       <body>
         <h3>Hi ${guests[0]?.firstName || ""}</h3>
         <p>
-          Thank you for your registration to attend the celebration of 50 years of football
-          with Takaro AFC.
+          Thank you for your registration to attend the celebration of 50 years
+          of football with Takaro AFC.
         </p>
         <p>
           <b>IMPORTANT!!!</b> Registration needs to be paid by the 24th of May.
         </p>
         <p>
           You will recieve an invoice shortly with payment details for you and
-          your guests attendance. Your registration is not complete until the invoice is 
-          paid in full by 24th of May to confirm your registration
+          your guests attendance. Your registration is not complete until the
+          invoice is paid in full by 24th of May to confirm your registration
         </p>
         <p>You have registered the following guests</p>
         <table style="border-spacing: 10px;">
@@ -69,7 +69,8 @@ export function generateGuestEmail(
 
 export function generateAdminEmail(
   guests: GuestSchema,
-  amount: number
+  amount: number,
+  email: string
 ): string {
   const guestTable = createGuestTable(guests);
 
@@ -85,7 +86,7 @@ export function generateAdminEmail(
         </title>
       </head>
       <body>
-        <h3>New registration for the following guests</h3>
+        <h3>New registration (${email}) for the following guests</h3>
         <table style="border-spacing: 10px;">
           <tr>
             <th>First Name</th>
