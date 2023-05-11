@@ -2,13 +2,13 @@ import { type NextPage } from "next";
 import Head from "next/head";
 
 // import { api } from "~/utils/api";
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
 // import { LoadingSpinner } from "~/components/loading";
 
 const Home: NextPage = () => {
   // const { data, isLoading } = api.registrations.getAll.useQuery();
   const user = useUser();
-
+  const { signOut } = useClerk();
   // if (isLoading) return <LoadingSpinner />;
 
   // if (!data) return <div>Something went wrong</div>;
@@ -33,11 +33,12 @@ const Home: NextPage = () => {
             </SignInButton>
           )}
           {user.isSignedIn && (
-            <SignOutButton>
-              <button className="focus:shadow-outline rounded bg-slate-200 px-4 py-2 font-bold text-orange-takaro shadow hover:bg-slate-100 focus:outline-none">
-                Sign Out
-              </button>
-            </SignOutButton>
+            <button
+              onClick={() => signOut()}
+              className="focus:shadow-outline rounded bg-slate-200 px-4 py-2 font-bold text-orange-takaro shadow hover:bg-slate-100 focus:outline-none"
+            >
+              Sign Out
+            </button>
           )}
         </div>
 

@@ -9,16 +9,15 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 const publicPaths = ["/", "/sign-in*", "/sign-up*"];
 
 const isPublic = (path: string) => {
-  return publicPaths.some((x) => {
-    console.log({ path, x });
-    path.match(new RegExp(`^${x}$`.replace("*$", "($|/)")));
-  });
+  return publicPaths.find((x) =>
+    path.match(new RegExp(`^${x}$`.replace("*$", "($|/)")))
+  );
 };
 
 export default withClerkMiddleware((req) => {
   console.log(req.nextUrl.pathname);
   // return NextResponse.next();
-  if (req.nextUrl.pathname === "/") {
+  if (isPublic(req.nextUrl.pathname)) {
     return NextResponse.next();
   }
 
