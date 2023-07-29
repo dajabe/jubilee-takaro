@@ -98,21 +98,10 @@ const Form: NextPage = () => {
 
   return (
     <form
-      className="mb-4 rounded-lg bg-slate-100 px-8 pb-8 pt-6 shadow-md"
+    className="shadow-md rounded-2xl bg-slate-100 p-12"
       onSubmit={handleSubmit(submitHandler)}
     >
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="mb-4 text-5xl font-extrabold tracking-tight text-slate-800 drop-shadow-xl sm:text-[5rem]">
-          50<sup>th</sup> JUBILEE
-        </h1>
-        <p className=" text-2xl text-slate-800">
-          Register here to join the Takaro AFC 50th Jubilee celebration!
-        </p>
-        <p className="mb-6 text-lg text-slate-800">
-          To confirm numbers for registrations please ensure you have completed
-          and paid by the 24th of May.
-        </p>
-      </div>
+
       <div className="mb-4 flex flex-col">
         <label
           htmlFor="email"
