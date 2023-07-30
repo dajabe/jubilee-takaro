@@ -11,7 +11,7 @@ const Home: NextPage = () => {
           <div className="flex w-3/4 flex-col items-center justify-center gap-4 rounded-2xl bg-zinc-800 p-12 shadow-md">
             <div className="flex flex-col items-center gap-2">
               <h1 className="mb-4 text-5xl font-extrabold tracking-tight drop-shadow-xl sm:text-[5rem]">
-                50<sup>th</sup> JUBILEE'
+                50<sup>th</sup> JUBILEE
               </h1>
               <p className="text-2xl">
                 Register here to join the Takaro AFC 50th Jubilee celebration!
